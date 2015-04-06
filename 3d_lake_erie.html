@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+	<head>
+		<title>3D Lake Erie Topology</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="js/papaparse.min.js"></script>
+		<script type="text/javascript" src="js/three.min.js"></script>
+		<script type="text/javascript" src="js/TrackballControls.js"></script>
+		<script type="text/javascript" src="js/create3D_map_test.js"></script>
+
+	</head>
+	
+	<body>
+		
+		<script type="text/javascript">
+			var data;
+ 			var mesh;
+			var map_topo;
+			var map_coor;
+			var do_coor;  
+			var file_counter=0;
+
+			  	function handleFileSelect() {
+
+				    var file1=$("#map_file").get(0).files[0];
+				    var file2=$("#map_coordinates_file").get(0).files[0];
+				    var file3=$("#DO_coordinates_file").get(0).files[0];
+				    var file4=$("#DO_data_file").get(0).files[0];
+
+
+				    Papa.parse(file1, {
+				      header: false,
+				      dynamicTyping: true,
+				      complete: function(results) {
+				      	console.log("map_topo load successful")
+				        file_counter+=1;
+				        map_topo=results;
+				        // if(file_counter===3){
+				        	// create3DMap(map_topo.data)
+				        	streaming_data(file4);
+				        // }
+				      }
+				    });
+
+				    Papa.parse(file2, {
+				      header: false,
+				      dynamicTyping: true,
+				      complete: function(results) {
+				      	console.log("map_coor load successful")
+				        map_coor = results;
+				        file_counter+=1;
+				        if(file_counter===3){
+				        	// create3DMap(map_topo.data)
+				        	// streaming_data(file4);
+				        };
+				      }
+				    });
+
+				    Papa.parse(file3, {
+				      header: false,
+				      dynamicTyping: true,
+				      complete: function(results) {
+				      	console.log("map_coor load successful")
+				        do_coor = results;
+				        file_counter+=1;
+				        if(file_counter===3){
+				        	// create3DMap(map_topo.data)
+				        	// streaming_data(file4);
+				        }
+				      }
+				    });
+			    }
+
+			   function streaming_data(){
+			    	var file=$("#DO_data_file").get(0).files[0];
+			    	// var c=0
+			    	console.log(file);
+			    	
+			    	Papa.parse(file, {
+				   	   header:false,
+				   	   dynamicTyping: true,
+				   	   delimiter: ",",
+				   	   // worker:true,
+				   	   step:function(rows){
+				   	   		console.log("row:",rows.data);
+				   	   		// c+=1;
+				   	   },
+
+				   	   complete: function(results) {
+				   	   	console.log("finished");
+				   	   }
+
+
+				   });
+			   }
+
+
+
+		</script>
+
+		<input type="file" id="map_file" name="files"/> <br>
+		<input type="file" id="map_coordinates_file" name="files"/> <br>
+		<input type="file" id="DO_coordinates_file" name="files"/> <br>
+		<input type="file" id="DO_data_file" name="files"/> <br>
+
+		<!-- <button onclick="handleFileSelect()"> Plot DO values </button> -->
+		<button onclick="streaming_data()"> Plot DO values </button>
+		<br>
+
+
+
+	</body>
+</html>
