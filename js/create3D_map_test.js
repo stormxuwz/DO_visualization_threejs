@@ -1,180 +1,209 @@
 function create3DMap(data){
-		// console.log("create3DMap");
-		var height=data.length;
-		var width=data[0].length;
 
-		var scene = new THREE.Scene();
-		
-		var renderer = new THREE.WebGLRenderer();
-
-		renderer.setClearColor("white", 0.9);
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000 );
-        camera.position.x = 0;
-        camera.position.y = 50;
-        camera.position.z = 50;
-		camera.lookAt(new THREE.Vector3(0,0,0));
-
-		// var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
-		// camera.position.x = 0;
-  //       camera.position.y = 100;
-  //       camera.position.z = 0;
-
-		document.body.appendChild(renderer.domElement);
+	var height=data.length;
+	var width=data[0].length;
+	current_position=[0,1,2,3,4,5];
+	scene = new THREE.Scene();
 	
-		var geom = new THREE.Geometry();
-		
-		console.log([width,height]);
+	var scale = chroma.scale(['red', 'yellow', 'blue']).domain([0, 12]);
 
-		
-		controls = new THREE.TrackballControls(camera);
-		controls.rotateSpeed = 1.0;
-		controls.zoomSpeed = 0.2;
-		controls.panSpeed = 0.8;
+	renderer = new THREE.WebGLRenderer();
 
-		controls.noZoom = false;
-		controls.noPan = false;
+	renderer.setClearColor("white", 1);
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-		controls.staticMoving = true;
-		controls.dynamicDampingFactor = 0.3;
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000 );
+    camera.position.x = 0;
+    camera.position.y = 0;
+    camera.position.z = 300;
+	camera.lookAt(new THREE.Vector3(0,0,0));
+
+	var light = new THREE.DirectionalLight();
+    light.position.set(0, 100, 0);
+	scene.add(light);
+
+	document.body.appendChild(renderer.domElement);
+
+	var geom = new THREE.Geometry();
+	
+	console.log([width,height]);
+
+	
+	controls = new THREE.TrackballControls(camera);
+	controls.rotateSpeed = 1.0;
+	controls.zoomSpeed = 0.2;
+	controls.panSpeed = 0.8;
+
+	controls.noZoom = false;
+	controls.noPan = false;
+
+	controls.staticMoving = true;
+	controls.dynamicDampingFactor = 0.3;
+	
+	// Create vertices
+	for(var y=0;y<height;y++){
+		for(var x=0;x<width;x++){		
+			// var vertex=new THREE.Vector3((x-width/2.0), -1, (y-height/2.0));
+			var vertex=new THREE.Vector3((x-width/2.0), (y-height/2.0), -1);
+			// var vertex=new THREE.Vector3(-82.5+x*0.002745665, -1, 42.5-y*0.00204499);
+			geom.vertices.push(vertex);
+		}
+	}
+
+	// Create faces
+	for(var y=0;y<height-1;y++){
+		for(var x=0;x<width-1;x++){
+			
+			var a=x+y*width;
+			var b=(x+1)+y*width;
+			var c=x+(y+1)*width;
+			var d=x+1+(y+1)*width;
+
+			
+			var color_a=new THREE.Color(data[y][x]);
+			var color_b=new THREE.Color(data[y][x+1]);
+			var color_c=new THREE.Color(data[y+1][x]);
+			var color_d=new THREE.Color(data[y+1][x+1]);
+
+			var face1=new THREE.Face3(a,b,d);
+			var face2=new THREE.Face3(d,c,a);
+
+			face1.vertexColors=[color_a,color_b,color_d];
+			face2.vertexColors=[color_d,color_c,color_a];
+
+			geom.faces.push(face1);
+			geom.faces.push(face2);
+		}
+	}
+
+	geom.computeVertexNormals(true);
+		geom.computeFaceNormals();
+		geom.computeBoundingBox();
 		
-		// Create vertices
-		for(var y=0;y<height;y++){
-			for(var x=0;x<width;x++){		
-				var vertex=new THREE.Vector3(x-width/2.0, -1, (y-height/2.0));
-				geom.vertices.push(vertex);
-			}
+	
+	var vertexColorMaterial = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors});
+	// var vertexColorMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
+	vertexColorMaterial.side=THREE.DoubleSide;
+	var mesh = new THREE.Mesh( geom, vertexColorMaterial );
+	scene.add(mesh)
+
+	// Toy DO data
+	// Create DO surface
+
+	var DO_geom = new THREE.Geometry();
+	
+	for(var i=0; i<do_coor.length;i++){
+		// console.log(do_coor[i]);
+		var vertex=new THREE.Vector3( (do_coor[i][1]+81.59)*80,(do_coor[i][0]-42.01)*80,0);
+		// var vertex=new THREE.Vector3((do_coor[i][0]-42.01)*8/0.03153800, -1,(do_coor[i][1]+81.59)*8/0.142);
+		// var vertex=new THREE.Vector3(do_coor[i][0], -1, do_coor[i][1]);
+		DO_geom.vertices.push(vertex);
+	}
+
+	
+	for(var i=0; i<face_index.length;i++){
+		// console.log(face_index[i]);
+		var face=new THREE.Face3(face_index[i][0],face_index[i][1],face_index[i][2]);
+		// face.color=new THREE.Color(0x666666);
+		DO_geom.faces.push(face);
+	}
+
+
+
+
+	// The following is a toy face
+	// var v1=new THREE.Vector3(-10,10,-10);
+	// var v2=new THREE.Vector3(10,8,-10);
+	// var v3=new THREE.Vector3(-10,6,10);
+	// var v4=new THREE.Vector3(10,7,10);
+
+	
+	// DO_geom.vertices.push(v1);
+	// DO_geom.vertices.push(v2);
+	// DO_geom.vertices.push(v3);
+	// DO_geom.vertices.push(v4);
+
+	// var face1=new THREE.Face3(0,1,3);
+	// var face2=new THREE.Face3(3,2,0);
+
+	// face1.vertexColors=[new THREE.Color(0xFFFF00),new THREE.Color(0xFF0000),new THREE.Color(0x66FF00)];
+	// face2.vertexColors=[new THREE.Color(0x66FF00),new THREE.Color(0x0000FF),new THREE.Color(0xFFFF00)];
+
+
+	// face1.color=new THREE.Color(0x00ff00);
+	// face2.color=new THREE.Color(0xFF0000);
+	
+	// DO_geom.faces.push(face1);
+	// DO_geom.faces.push(face2);
+
+	// var DO_vertexColorMaterial = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors});
+	var DO_vertexColorMaterial = new THREE.MeshLambertMaterial( { vertexColors: THREE.FaceColors});
+	var DO_mesh = new THREE.Mesh( DO_geom, vertexColorMaterial );
+
+	scene.add(DO_mesh)
+
+	axes = buildAxes( 100 );
+	scene.add( axes );
+
+	var fps=60;
+
+	function render() 
+	{	
+		renderer.render(scene,camera);
+		controls.update();
+		// geom.vertices[index].setY(currentY+3*Math.random()*(height_change[j+1]-height_change[j])/60);
+
+		for(var i=0;i<current_position.length;i++){
+			// DO_geom.faces[0].vertexColors[0].setHSL(, 0.5, 0.5 )
+			// DO_geom.faces[0].vertexColors[0].setHSL(, 0.5, 0.5 )
+			// DO_geom.faces[0].vertexColors[0].setHSL(, 0.5, 0.5 )
+
+			DO_geom.vertices[i].setY(current_position[i]*8);
 		}
 
-		// Create faces
-		for(var y=0;y<height-1;y++){
-			for(var x=0;x<width-1;x++){
-				
-				var a=x+y*width;
-				var b=(x+1)+y*width;
-				var c=x+(y+1)*width;
-				var d=x+1+(y+1)*width;
-
-				
-				var color_a=new THREE.Color(data[y][x]);
-				var color_b=new THREE.Color(data[y][x+1]);
-				var color_c=new THREE.Color(data[y+1][x]);
-				var color_d=new THREE.Color(data[y+1][x+1]);
-
-				var face1=new THREE.Face3(a,b,d);
-				var face2=new THREE.Face3(d,c,a);
-
-				face1.vertexColors=[color_a,color_b,color_d];
-				face2.vertexColors=[color_d,color_c,color_a];
-
-				geom.faces.push(face1);
-				geom.faces.push(face2);
-			}
+		for(var i =0;i<DO_geom.faces.length;i++){
+			// var a=DO_geom.faces[i].a;
+			// var b=DO_geom.faces[i].b;
+			// var c=DO_geom.faces[i].c;
+			DO_geom.faces[i].color=new THREE.Color(scale(current_position[DO_geom.faces[i].a]).hex());
+			// DO_geom.faces[i].vertexColors[]
 		}
-
-		geom.computeVertexNormals(true);
-  		geom.computeFaceNormals();
-  		geom.computeBoundingBox();
-  		
-		
-		var vertexColorMaterial = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors});
-		// var vertexColorMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
-		vertexColorMaterial.side=THREE.DoubleSide;
-		var mesh = new THREE.Mesh( geom, vertexColorMaterial );
-		scene.add(mesh)
-
-		// Toy DO data
-		var DO_geom = new THREE.Geometry();
-		
-		var v1=new THREE.Vector3(-10,10,-10);
-		var v2=new THREE.Vector3(10,8,-10);
-		var v3=new THREE.Vector3(-10,6,10);
-		var v4=new THREE.Vector3(10,7,10);
+		// var currentY=DO_geom.vertices[0].y
+		// var velocity=
 
 		
-		DO_geom.vertices.push(v1);
-		DO_geom.vertices.push(v2);
-		DO_geom.vertices.push(v3);
-		DO_geom.vertices.push(v4);
+		// DO_geom.vertices[0].setY(current_position[0]*2);
 
-		var face1=new THREE.Face3(0,1,3);
-		var face2=new THREE.Face3(3,2,0);
-
-		face1.vertexColors=[new THREE.Color(0xFFFF00),new THREE.Color(0xFF0000),new THREE.Color(0x66FF00)];
-		face2.vertexColors=[new THREE.Color(0x66FF00),new THREE.Color(0x0000FF),new THREE.Color(0xFFFF00)];
-
-
-		// face1.color=new THREE.Color(0x00ff00);
-		// face2.color=new THREE.Color(0xFF0000);
+		// console.log(current_position[0]*10);
 		
-		DO_geom.faces.push(face1);
-		DO_geom.faces.push(face2);
+		// DO_geom.faces[0].vertexColors[0].setHSL(, 0.5, 0.5 );
+		DO_mesh.geometry.colorsNeedUpdate = true;
+		DO_mesh.geometry.verticesNeedUpdate = true;
+		// requestAnimationFrame( render );
+		// }
 
-		var DO_vertexColorMaterial = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors});
-		var DO_mesh = new THREE.Mesh( DO_geom, vertexColorMaterial );
-		scene.add(DO_mesh)
-
-
-
-		axes = buildAxes( 100 );
-		scene.add( axes );
-
-		height_change=[0,5,10,5,10,5,5];
-		// velocity=[]
-
-		var i=0;
-		var j=0;
+		// DO_geom.vertices[0]=new THREE.Vector3(-10,randomNum*20,-10);
+		// DO_geom.faces[0].vertexColors[0].setHSL( randomNum, 0.5, 0.5 );
 		
-
-		function render() {
-			renderer.render( scene, camera );
-			controls.update();
-			i++ // i is the current time
-			j=Math.floor(i/60);
-			j=j>5?5:j
-
-			// while(j<5){
-				
-				// console.log(currentY);
-				// console.log((height_change[j+1]-height_change[j])/60);
-				for(var index=0;index<geom.vertices.length;index++){
-					var currentY=geom.vertices[index].y
-					geom.vertices[index].setY(currentY+3*Math.random()*(height_change[j+1]-height_change[j])/60);
-				}
-				
-				// console.log([i,j]);
-				// DO_geom.faces[0].vertexColors[0].setHSL(, 0.5, 0.5 );
-				// DO_mesh.geometry.colorsNeedUpdate = true;
-				mesh.geometry.verticesNeedUpdate = true;
-				// requestAnimationFrame( render );
-			// }
-
-
-			// DO_geom.vertices[0]=new THREE.Vector3(-10,randomNum*20,-10);
-			// DO_geom.faces[0].vertexColors[0].setHSL( randomNum, 0.5, 0.5 );
-			
-			
-			// mesh.geometry.computeVertexNormals();
-			
-			// setTimeout( function() {
-        	requestAnimationFrame( render );
-
-    		// }, 1000 / 1);
-		}
-
-		render();
-
+		// mesh.geometry.computeVertexNormals();
+		// setTimeout( function() {
+		requestAnimationFrame( render );
+		// }, 1000 / 1);
+	}
+	render();
 }
+
+
+
 
 function buildAxes( length ) {
 		var axes = new THREE.Object3D();
 
-		axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( length, 0, 0 ), 0xFF0000, false ) ); // +X
+		axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( length, 0, 0 ), 0xFF0000, false ) ); // +X "red"
 		axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( -length, 0, 0 ), 0xFF0000, true) ); // -X
-		axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, length, 0 ), 0x00FF00, false ) ); // +Y
+		axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, length, 0 ), 0x00FF00, false ) ); // +Y "green"
 		axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, -length, 0 ), 0x00FF00, true ) ); // -Y
-		axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, length ), 0x0000FF, false ) ); // +Z
+		axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, length ), 0x0000FF, false ) ); // +Z "blue"
 		axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -length ), 0x0000FF, true ) ); // -Z
 
 		return axes;
