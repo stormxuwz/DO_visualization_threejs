@@ -44,8 +44,8 @@ function create3DMap(data){
 	for(var y=0;y<height;y++){
 		for(var x=0;x<width;x++){		
 			// var vertex=new THREE.Vector3((x-width/2.0), -1, (y-height/2.0));
-			var vertex=new THREE.Vector3((x-width/2.0), (y-height/2.0), -1);
-			// var vertex=new THREE.Vector3(-82.5+x*0.002745665, -1, 42.5-y*0.00204499);
+			// var vertex=new THREE.Vector3((x-width/2.0), -(y-height/2.0), -10);
+			var vertex=new THREE.Vector3((-82.5+x*0.005491329+81.55)*80, -(41.5+y*0.004081633-42)*80,-1);
 			geom.vertices.push(vertex);
 		}
 	}
@@ -158,7 +158,7 @@ function create3DMap(data){
 			// DO_geom.faces[0].vertexColors[0].setHSL(, 0.5, 0.5 )
 			// DO_geom.faces[0].vertexColors[0].setHSL(, 0.5, 0.5 )
 
-			DO_geom.vertices[i].setY(current_position[i]*8);
+			DO_geom.vertices[i].setZ(current_position[i]*5);
 		}
 
 		for(var i =0;i<DO_geom.faces.length;i++){
