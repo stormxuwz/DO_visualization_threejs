@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Lake Erie DO Visualization</title>
+
+	<!-- JavaScript -->
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+	<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.29.1"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.simple-dtpicker.js"></script>
+	<script type="text/javascript" src="js/chroma.min.js"></script>
+
+	<!-- CSS -->
+	<link type="text/css" href="css/jquery.simple-dtpicker.css" rel="stylesheet" />
+	<link type="text/css" href="css/myCSS.css" rel="stylesheet"/>
+</head>
+
+<body>
+	
+	<input type="text" id="time_pick" value="">
+	<button id="Plot">Show this time</button>
+	<button id="Plot_10">Next 10 mins</button>
+	<button id="Plot_hour">Next hour</button>
+	<button id="Plot_day">Next day</button>
+	<button id="Plot_month">Next Month</button>
+
+	<button id="Plot_movie">See movie</button>
+
+	<script type="text/javascript">
+	$('#time_pick').appendDtpicker({
+			"minuteInterval": 10,
+			"closeOnSelected": true,
+			"todayButton": false,
+			"autodateOnStart": true,
+			"current": "2014-7-4 12:30"
+		});
+	
+	$("#Plot").on('click',function(){
+		var timeString=$("#time_pick").val();
+		if(timeString===""){
+			return;
+		}
+		else{
+			console.log(timeString);
+			var time=new Date(timeString);
+			changeData(time,300);
+		}
+	});	
+
+	$("#Plot_10").on('click',function(){
+		var timeString=$("#time_pick").val();
+
+		if(timeString===""){
+			return;
+		}
+		else{
+			// console.log(timeString);
+			var time=new Date(timeString);
+			// time=time+10*60*1000;
+			time.setMinutes(time.getMinutes()+10);
+			console.log(time);
+			$("#time_pick").val(time)
+			changeData(time,300);
+		}
+	});
+
+	$("#Plot_hour").on('click',function(){
+		var timeString=$("#time_pick").val();
+
+		if(timeString===""){
+			return;
+		}
+		else{
+			// console.log(timeString);
+			var time=new Date(timeString);
+			// time=time+10*60*1000;
+			time.setHours(time.getHours()+1);
+			console.log(time);
+			$("#time_pick").val(time)
+			changeData(time,300);
+		}
+	});
+
+	$("#Plot_day").on('click',function(){
+		var timeString=$("#time_pick").val();
+
+		if(timeString===""){
+			return;
+		}
+		else{
+			// console.log(timeString);
+			var time=new Date(timeString);
+			// time=time+10*60*1000;
+			time.setDate(time.getDate()+1);
+			console.log(time);
+			$("#time_pick").val(time)
+			changeData(time,300);
+		}
+	});
+
+	$("#Plot_month").on('click',function(){
+		var timeString=$("#time_pick").val();
+
+		if(timeString===""){
+			return;
+		}
+		else{
+			// console.log(timeString);
+			var time=new Date(timeString);
+			// time=time+10*60*1000;
+			time.setMonth(time.getMonth()+1);
+			console.log(time);
+			$("#time_pick").val(time)
+			changeData(time,300);
+		}
+	});
+
+
+	$("#Plot_movie").on('click',function(){
+		var timeString=$("#time_pick").val();
+
+		if(timeString===""){
+			return;
+		}
+		else{
+			// console.log(timeString);
+			var time=new Date(timeString);
+			// time=time+10*60*1000;
+			for(var i=0;i<1000;i++){
+				time.setMinutes(time.getMinutes()+10);
+				console.log(time);
+				$("#time_pick").val(time)
+
+				setTimeout( function() {
+					changeData(time,100);
+				},1000)
+			}
+		
+		}
+	});
+
+
+	</script>
+	
+
+	<div id="map"></div>
+	
+	<!-- <mydiv>
+		<svg height="100" width="100">
+  			<circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="#5454aa" />
+		</svg>
+	</mydiv>
+ -->
+	<script type="text/javascript" src="js/spatial.js"></script>
+
+	<script type="text/javascript"></script>
+
+</body>
+</html>
