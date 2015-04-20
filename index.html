@@ -25,6 +25,9 @@
 	<button id="Plot_month">Next Month</button>
 
 	<button id="Plot_movie">See movie</button>
+	<button id="3D_movie">3D movie</button>
+
+	
 
 	<script type="text/javascript">
 	$('#time_pick').appendDtpicker({
@@ -59,7 +62,8 @@
 			// time=time+10*60*1000;
 			time.setMinutes(time.getMinutes()+10);
 			console.log(time);
-			$("#time_pick").val(time)
+			$("#time_pick").handleDtpicker('setDate', time);
+			// $("#time_pick").val(time)
 			changeData(time,300);
 		}
 	});
@@ -76,7 +80,7 @@
 			// time=time+10*60*1000;
 			time.setHours(time.getHours()+1);
 			console.log(time);
-			$("#time_pick").val(time)
+			$("#time_pick").handleDtpicker('setDate', time);
 			changeData(time,300);
 		}
 	});
@@ -93,7 +97,7 @@
 			// time=time+10*60*1000;
 			time.setDate(time.getDate()+1);
 			console.log(time);
-			$("#time_pick").val(time)
+			$("#time_pick").handleDtpicker('setDate', time);
 			changeData(time,300);
 		}
 	});
@@ -110,7 +114,7 @@
 			// time=time+10*60*1000;
 			time.setMonth(time.getMonth()+1);
 			console.log(time);
-			$("#time_pick").val(time)
+			$("#time_pick").handleDtpicker('setDate', time);
 			changeData(time,300);
 		}
 	});
@@ -129,7 +133,7 @@
 			for(var i=0;i<1000;i++){
 				time.setMinutes(time.getMinutes()+10);
 				console.log(time);
-				$("#time_pick").val(time)
+				$("#time_pick").handleDtpicker('setDate', time);
 
 				setTimeout( function() {
 					changeData(time,100);
@@ -138,12 +142,11 @@
 		
 		}
 	});
-
-
 	</script>
 	
 
 	<div id="map"></div>
+	<div id="timeSeries">Show Time Series Here</div>
 	
 	<!-- <mydiv>
 		<svg height="100" width="100">
