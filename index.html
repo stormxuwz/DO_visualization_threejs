@@ -18,17 +18,17 @@
 <body>
 	
 	<input type="text" id="time_pick" value="">
+
+
 	<button id="Plot">Show this time</button>
 	<button id="Plot_10">Next 10 mins</button>
 	<button id="Plot_hour">Next hour</button>
 	<button id="Plot_day">Next day</button>
 	<button id="Plot_month">Next Month</button>
-
 	<button id="Plot_movie">See movie</button>
 	<button id="3D_movie">3D movie</button>
 
 	
-
 	<script type="text/javascript">
 	$('#time_pick').appendDtpicker({
 			"minuteInterval": 10,
@@ -127,9 +127,7 @@
 			return;
 		}
 		else{
-			// console.log(timeString);
 			var time=new Date(timeString);
-			// time=time+10*60*1000;
 			for(var i=0;i<1000;i++){
 				time.setMinutes(time.getMinutes()+10);
 				console.log(time);
@@ -146,14 +144,17 @@
 	
 
 	<div id="map"></div>
+	
 	<div id="timeSeries">Show Time Series Here</div>
 	
-	<!-- <mydiv>
+	<!-- 
+	<mydiv>
 		<svg height="100" width="100">
   			<circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="#5454aa" />
 		</svg>
 	</mydiv>
- -->
+ 	-->
+
 	<script type="text/javascript" src="js/spatial.js"></script>
 
 	<script type="text/javascript"></script>
