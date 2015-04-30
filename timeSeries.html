@@ -68,13 +68,14 @@ var line = d3.svg.line()
         return y(d.close);  
       });
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#timeSeries").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var DO = [];
+
  // get the data
 d3.csv("small.csv", function(error, data) {
   data.forEach(function(d) {
@@ -83,13 +84,10 @@ d3.csv("small.csv", function(error, data) {
   });
 
   
-  for (var i = 0; i<data.length; i++){
-    
+for (var i = 0; i<data.length; i++){
     if (data[i].date<=t && data[i].date>=s){
-      DO.push(data[i])
-      
+        DO.push(data[i])
     }
-
 }
 
   x.domain(d3.extent(DO, function(d) { return d.date; }));

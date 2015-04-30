@@ -1,43 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Lake Erie DO Visualization</title>
-
-	<!-- JavaScript -->
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
-	<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.29.1"></script>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jquery.simple-dtpicker.js"></script>
-	<script type="text/javascript" src="js/chroma.min.js"></script>
-
-	<!-- CSS -->
-	<link type="text/css" href="css/jquery.simple-dtpicker.css" rel="stylesheet" />
-	<link type="text/css" href="css/myCSS.css" rel="stylesheet"/>
-</head>
-
-<body>
-	
-	<input type="text" id="time_pick" value="">
-
-
-	<button id="Plot">Show this time</button>
-	<button id="Plot_10">Next 10 mins</button>
-	<button id="Plot_hour">Next hour</button>
-	<button id="Plot_day">Next day</button>
-	<button id="Plot_month">Next Month</button>
-	<button id="Plot_movie">See movie</button>
-	<button id="3D_movie">3D movie</button>
-
-	
-	<script type="text/javascript">
-	$('#time_pick').appendDtpicker({
+$('#time_pick').appendDtpicker({
 			"minuteInterval": 10,
 			"closeOnSelected": true,
 			"todayButton": false,
 			"autodateOnStart": true,
 			"current": "2014-7-4 12:30"
 		});
-	
+
+
+$('#start_time').appendDtpicker({
+			"minuteInterval": 10,
+			"closeOnSelected": true,
+			"todayButton": false,
+			"autodateOnStart": true,
+			"current": "2014-7-4 12:30"
+		});
+
+$('#end_time').appendDtpicker({
+			"minuteInterval": 10,
+			"closeOnSelected": true,
+			"todayButton": false,
+			"autodateOnStart": true,
+			"current": "2014-7-5 12:30"
+		});
+
+
 	$("#Plot").on('click',function(){
 		var timeString=$("#time_pick").val();
 		if(timeString===""){
@@ -140,24 +126,3 @@
 		
 		}
 	});
-	</script>
-	
-
-	<div id="map"></div>
-	
-	<div id="timeSeries">Show Time Series Here</div>
-	
-	<!-- 
-	<mydiv>
-		<svg height="100" width="100">
-  			<circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="#5454aa" />
-		</svg>
-	</mydiv>
- 	-->
-
-	<script type="text/javascript" src="js/spatial.js"></script>
-
-	<script type="text/javascript"></script>
-
-</body>
-</html>

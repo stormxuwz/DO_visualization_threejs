@@ -38,9 +38,11 @@ var tooltip = d3.select("body")
 function init(){
 	// Create Map
 	map = new google.maps.Map(d3.select("#map").node(), {
-		zoom: 9,
+		zoom: 8,
 		center: new google.maps.LatLng(42.054393, -81.386539),  
-		mapTypeId: google.maps.MapTypeId.TERRAIN
+		mapTypeId: google.maps.MapTypeId.TERRAIN,
+		streetViewControl: false,
+		panControl: false,
 	});
 	
 	overlay = new google.maps.OverlayView();
@@ -62,7 +64,7 @@ function init(){
 		         
 
 		      marker.append("svg:circle")
-		          .attr("r", 12)
+		          .attr("r", 10)
 		          .attr("cx", padding)
 		          .attr("cy", padding)
 		          .on('mouseover', function(){}) // Change event function
@@ -89,6 +91,10 @@ function init(){
 	}
 	overlay.setMap(map);
 	console.log("map finished");
+	// showTimeSeries("10384449");
+
+	// Create Time series template
+
 }
 
 
@@ -104,8 +110,6 @@ function changeData(time,transtion_time) {
 	}
 
 	var row_index=diffTime/(60*10*1000);
-	// var row_index=
-	// var dummyData=[20,9,11,8];
 	console.log(diffTime)
 	console.log(row_index);
 	var newData=[];
@@ -117,31 +121,134 @@ function changeData(time,transtion_time) {
 	circles.data(newData)
 	.transition()
 	.duration(transtion_time)
-	// .attr("r",function(d){return d+1;})
-	.style("fill",function(d) {return scale(d).toString()})
-	
+	.style("fill",function(d) {return scale(d).toString()});
+
+	d3.select(overlay.getPanes().overlayMouseTarget)
+	.selectAll("text")
+	.data(newData)
+	.text(function(d) {return String(d.toFixed(2))});
+
 	circles
 	.on("mouseover", function(d){
 		return tooltip.text(String(d.toFixed(2))).style("visibility", "visible");
 	})
 	.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
 	.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
+	
 	.on("click", function(d,i){
 		// Function to show the time series
 		circles.style("stroke","black").style("stroke-width","1.5px");
 		d3.select(this).style("stroke","red").style("stroke-width","3px");
-		// return tooltip.style("visibility", "hidden");
-		showTimeSeries(station_entries[i].key)
+		
+		showTimeSeries(station_entries[i].key);
 	});
-
-	// circles.selectAll("title")
-	// .text(function(d) {return d});
-	// setTimeout(function(){},transtion_time);
 }
 
 
 function showTimeSeries(stationName){
 	
+	var start_time=new Date($("#start_time").val());
+	var end_time=new Date($("#end_time").val());
+
+	var margin = {top: 20, right: 20, bottom: 30, left: 50};
+	var width=$("#timeSeriesSVG").width();
+	var height=450;
+	var padding = 40;
+
+	var start_diffTime=start_time-initialTime;
+	var end_diffTime=end_time-initialTime;
+
+	var start_row_index=start_diffTime/(60*10*1000);
+	var end_row_index=end_diffTime/(60*10*1000);
+
+
+	var x=d3.time.scale()
+    	.range([padding, width-padding*2]);
+
+	var y = d3.scale.linear()
+    	.range([height-2*padding, padding]);
+
+	var xAxis = d3.svg.axis()
+    	.scale(x)
+    	// .ticks(5)
+    	.orient("bottom");
+
+	var yAxis = d3.svg.axis()
+    	.scale(y)
+    	// .ticks(5)
+    	.orient("left");
+
+	var line = d3.svg.line()
+    	.x(function(d) {  
+        	return x(d.time);  
+    	})
+
+    	.y(function(d) { 
+        	return y(d.DO);  
+      	});
+
+    var showDate = d3.time.format("%m/%d/%y %H:%M");
+
+    var DO=[];
+
+    console.log([start_row_index,end_row_index]);
+	
+	for(var i=start_row_index;i<end_row_index+1;i++){
+		DO.push({"time":new Date(DO_data.Time[i]*1000),"DO":DO_data["logger_"+stationName][i]});
+	}	
+	console.log(DO);
+
+	var svg = d3.select("#timeSeries")
+    	.attr("width", width)
+    	.attr("height", height)
+  		.append("g")
+    	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+   	x.domain(d3.extent(DO, function(d) { return d.time; }));
+  	y.domain(d3.extent(DO, function(d) { return d.DO; }));
+    
+	svg.append("g") // x axis
+	  .attr("class", "axis")
+	  .attr("transform", "translate(0," + (height-padding) + ")")
+	  .call(xAxis)
+
+	  .append("text")
+	  .text("Time");
+
+  	
+  	svg.append("g") // y axis
+      .attr("class", "axis")
+      .call(yAxis)
+    	.append("text")
+      	.attr("transform", "rotate(-90)")
+      	.attr("y", 6)
+      	.attr("dy", ".71em")
+      	.style("text-anchor", "end")
+      	.text("DO (mg/L)");
+
+
+    var circle=svg.selectAll("circle").data(DO)
+    	circle.enter()
+    	.append("circle");
+    	circle
+    	.attr("cx",function(d){return x(d.time)})
+    	.attr("cy",function(d){return y(d.DO)})
+    	.attr("r",function(d){return 3})
+    	.on("mouseover", function(d){
+			return tooltip.text(String(d.DO.toFixed(2))+" at "+showDate(d.time))
+							.style("visibility", "visible");
+		})
+		.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+		.on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+
+		circle.exit().remove()
+
+    svg.append("path")
+      	.datum(DO)
+      	.attr("class", "line")
+      	.attr("d", line);
+
+
 	console.log(stationName);
 }
 
@@ -152,5 +259,4 @@ $(document).ready(function(){
 		initialTime=new Date(DO_data["Time"][0]*1000);
 		init();
 	});
-
 });
