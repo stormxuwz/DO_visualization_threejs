@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Lake Erie DO Visualization</title>
+
+	<!-- JavaScript -->
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+	<script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.simple-dtpicker.js"></script>
+	<script type="text/javascript" src="js/chroma.min.js"></script>
+
+
+	<!-- CSS -->
+	<link type="text/css" href="css/jquery.simple-dtpicker.css" rel="stylesheet" />
+	<link type="text/css" href="css/myCSS.css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="css/skeleton.css">
+</head>
+
+<body>
+	
+	<div class="container">
+		<div class="row">
+			<div class="six columns">
+
+			<h5>Spatial data</h5>
+				<input type="text" id="time_pick" value=""> 
+				<button id="Plot">Show this time</button> </br>
+				<button id="Plot_10">+10 mins</button>
+				<button id="Plot_hour">+ 1 hour</button>
+				<button id="Plot_day">+ 1 Day</button>
+				<button id="Plot_month">+1 Month</button> </br>
+
+				<button id="Plot_10">-10 mins</button>
+				<button id="Plot_hour">- 1 hour</button>
+				<button id="Plot_day">- 1 Day</button>
+				<button id="Plot_month">-1 Month</button> </br>
+				<!-- <button id="Plot_movie">See movie</button>	 -->
+				<div id="map" style="width: 100%; height: 450px"> Hello</div>
+
+			</div>
+
+			<div class="six columns">
+			<h5>Station time series</h5>
+				Start Time<input type="text" id="start_time" value=""> 
+				End Time <input type="text" id="end_time" value=""> 
+
+				<!-- <button id="day_range">Show daily</button> -->
+				<!-- <button id="month_range">Show weekly</button> -->
+				<!-- <button id="month_range">Show monthly</button> -->
+
+				<button id="Plot_hour">+ 1 hour</button>
+				<button id="Plot_day">+ 1 Day</button>
+				<button id="Plot_month">+1 Month</button> </br>
+
+				<button id="Plot_hour">- 1 hour</button>
+				<button id="Plot_day">- 1 Day</button>
+				<button id="Plot_month">-1 Month</button> </br>
+
+				<div id="timeSeriesSVG">
+					<svg id="timeSeries"></svg>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+<script type="text/javascript" src="js/button.js"></script>
+<script type="text/javascript" src="js/spatial.js"></script>
+	
+<!--	<div id="timeSeries">Show Time Series Here</div>-->
+	
+	<!-- 
+	<mydiv>
+		<svg height="100" width="100">
+  			<circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="#5454aa" />
+		</svg>
+	</mydiv>
+ 	-->
+
+</body>
+</html>
