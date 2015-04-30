@@ -294,24 +294,6 @@ $('#end_time').appendDtpicker({
 		
 	});
 
-
-	// $("#Plot_movie").on('click',function(){
-	// 	var timeString=$("#time_pick").val();
-
-	// 	if(timeString===""){
-	// 		return;
-	// 	}
-	// 	else{
-	// 		var time=new Date(timeString);
-	// 		for(var i=0;i<1000;i++){
-	// 			time.setMinutes(time.getMinutes()+10);
-	// 			console.log(time);
-	// 			$("#time_pick").handleDtpicker('setDate', time);
-
-	// 			setTimeout( function() {
-	// 				changeData(time,100);
-	// 			},1000)
-	// 		}
-		
-	// 	}
-	// });
+	$("#3d").on('click',function(){
+		 window.open( "./3d_lake_erie.html");
+	});	
