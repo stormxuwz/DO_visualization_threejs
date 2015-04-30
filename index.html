@@ -26,16 +26,16 @@
 
 			<h5>Spatial data</h5>
 				<input type="text" id="time_pick" value=""> 
-				<button id="Plot">Show this time</button> </br>
-				<button id="Plot_10">+10 mins</button>
-				<button id="Plot_hour">+ 1 hour</button>
-				<button id="Plot_day">+ 1 Day</button>
-				<button id="Plot_month">+1 Month</button> </br>
+				<button id="Plot">Show all stations at this time</button> </br>
+				<button id="Plot_add10">+10 mins</button>
+				<button id="Plot_addhour">+1 hour</button>
+				<button id="Plot_addday">+1 Day</button>
+				<button id="Plot_addmonth">+1 Month</button> </br>
 
-				<button id="Plot_10">-10 mins</button>
-				<button id="Plot_hour">- 1 hour</button>
-				<button id="Plot_day">- 1 Day</button>
-				<button id="Plot_month">-1 Month</button> </br>
+				<button id="Plot_minus10">-10 mins</button>
+				<button id="Plot_minushour">-1 hour</button>
+				<button id="Plot_minusday">-1 Day</button>
+				<button id="Plot_minusmonth">-1 Month</button> </br>
 				<!-- <button id="Plot_movie">See movie</button>	 -->
 				<div id="map" style="width: 100%; height: 450px"> Hello</div>
 
@@ -43,22 +43,24 @@
 
 			<div class="six columns">
 			<h5>Station time series</h5>
-				Start Time<input type="text" id="start_time" value=""> 
-				End Time <input type="text" id="end_time" value=""> 
+				From <input type="text" id="start_time" value=""> 
+				To <input type="text" id="end_time" value=""> 
 
 				<!-- <button id="day_range">Show daily</button> -->
 				<!-- <button id="month_range">Show weekly</button> -->
 				<!-- <button id="month_range">Show monthly</button> -->
 
-				<button id="Plot_hour">+ 1 hour</button>
-				<button id="Plot_day">+ 1 Day</button>
-				<button id="Plot_month">+1 Month</button> </br>
+				<button id="tsPlot_adddata">+1 day data</button>
+				<button id="tsPlot_addday">+1 Day</button>
+				<button id="tsPlot_addmonth">+1 Month</button> </br>
 
-				<button id="Plot_hour">- 1 hour</button>
-				<button id="Plot_day">- 1 Day</button>
-				<button id="Plot_month">-1 Month</button> </br>
+				<button id="tsPlot_minusdata">-1 day data</button>
+				<button id="tsPlot_minusday">-1 Day</button>
+				<button id="tsPlot_minusmonth">-1 Month</button> </br>
 
 				<div id="timeSeriesSVG">
+					<div id="stationName"> Station </div>
+					
 					<svg id="timeSeries"></svg>
 				</div>
 

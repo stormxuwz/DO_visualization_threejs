@@ -3,6 +3,7 @@ var map;
 var overlay;
 var initialTime;
 var scale = chroma.scale(['red', 'yellow', 'blue']).domain([0, 12]);
+var station_ts;
 
 var station_position={
 	"10523446":[-81.20418,42.42676],
@@ -33,7 +34,8 @@ var tooltip = d3.select("body")
 	.style("position", "absolute")
 	.style("z-index", "20")
 	.style("visibility", "hidden")
-	.text("a simple tooltip");
+	.text("a simple tooltip")
+	.style("stroke","red");
 
 function init(){
 	// Create Map
@@ -67,11 +69,13 @@ function init(){
 		          .attr("r", 10)
 		          .attr("cx", padding)
 		          .attr("cy", padding)
-		          .on('mouseover', function(){}) // Change event function
-				  .on('mouseout', function(){}) // Change event function
-		          // .append("svg:title")
-		          // .text(function(d) {return "d"});
-		          // .text(function(d) { return d.x; });
+		          .on("click", function(d,i){
+					// Function to show the time series
+					d3.select(this).style("stroke","red").style("stroke-width","3px");
+					station_ts=station_entries[i].key;
+					d3.select("#stationName").text("logger_"+station_ts);
+					showTimeSeries(station_entries[i].key);
+				});
 
 		      marker.append("svg:text")
 		          .attr("x", padding + 15)
@@ -94,6 +98,55 @@ function init(){
 	// showTimeSeries("10384449");
 
 	// Create Time series template
+
+	var margin = {top: 20, right: 20, bottom: 30, left: 50};
+	var width=$("#timeSeriesSVG").width();
+	var height=450;
+	var padding = 40;
+
+	var x=d3.time.scale()
+    	.range([padding, width-padding*2]);
+
+	var y = d3.scale.linear()
+    	.range([height-2*padding, padding]);
+
+	var xAxis = d3.svg.axis()
+    	.scale(x)
+    	.ticks(5)
+    	.orient("bottom");
+
+	var yAxis = d3.svg.axis()
+    	.scale(y)
+    	.ticks(5)
+    	.orient("left");
+
+	var svg = d3.select("#timeSeries")
+    	.attr("width", width)
+    	.attr("height", height)
+  		.append("g")
+  		.attr("id","ts_plot")
+    	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+	svg.append("g") // x axis
+	  .attr("id","xaxis")
+	  .attr("class", "axis")
+	  .attr("transform", "translate(0," + (height-padding) + ")")
+	  .call(xAxis)
+
+	  .append("text")
+	  .text("Time");
+
+  	
+  	svg.append("g") // y axis
+  	  .attr("id","yaxis")
+      .attr("class", "axis")
+      .call(yAxis)
+    	.append("text")
+      	.attr("transform", "rotate(-90)")
+      	.attr("y", 6)
+      	.attr("dy", ".71em")
+      	.style("text-anchor", "end")
+      	.text("DO (mg/L)");
 
 }
 
@@ -137,10 +190,13 @@ function changeData(time,transtion_time) {
 	
 	.on("click", function(d,i){
 		// Function to show the time series
+
 		circles.style("stroke","black").style("stroke-width","1.5px");
 		d3.select(this).style("stroke","red").style("stroke-width","3px");
-		
+		station_ts=station_entries[i].key;
+		d3.select("#stationName").text("logger_"+station_ts);
 		showTimeSeries(station_entries[i].key);
+
 	});
 }
 
@@ -161,6 +217,9 @@ function showTimeSeries(stationName){
 	var start_row_index=start_diffTime/(60*10*1000);
 	var end_row_index=end_diffTime/(60*10*1000);
 
+	if(end_row_index>DO_data.Index.length-1){
+		end_row_index=DO_data.Index.length-1;
+	}
 
 	var x=d3.time.scale()
     	.range([padding, width-padding*2]);
@@ -170,12 +229,12 @@ function showTimeSeries(stationName){
 
 	var xAxis = d3.svg.axis()
     	.scale(x)
-    	// .ticks(5)
+    	.ticks(5)
     	.orient("bottom");
 
 	var yAxis = d3.svg.axis()
     	.scale(y)
-    	// .ticks(5)
+    	.ticks(5)
     	.orient("left");
 
 	var line = d3.svg.line()
@@ -198,16 +257,12 @@ function showTimeSeries(stationName){
 	}	
 	console.log(DO);
 
-	var svg = d3.select("#timeSeries")
-    	.attr("width", width)
-    	.attr("height", height)
-  		.append("g")
-    	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var svg = d3.select("#timeSeries").select("#ts_plot");
 	
    	x.domain(d3.extent(DO, function(d) { return d.time; }));
   	y.domain(d3.extent(DO, function(d) { return d.DO; }));
     
-	svg.append("g") // x axis
+	svg.select("#xaxis") // x axis
 	  .attr("class", "axis")
 	  .attr("transform", "translate(0," + (height-padding) + ")")
 	  .call(xAxis)
@@ -216,7 +271,7 @@ function showTimeSeries(stationName){
 	  .text("Time");
 
   	
-  	svg.append("g") // y axis
+  	svg.select("#yaxis")// y axis
       .attr("class", "axis")
       .call(yAxis)
     	.append("text")
@@ -226,11 +281,14 @@ function showTimeSeries(stationName){
       	.style("text-anchor", "end")
       	.text("DO (mg/L)");
 
+    d3.selectAll("path.line").remove();
+
 
     var circle=svg.selectAll("circle").data(DO)
     	circle.enter()
     	.append("circle");
-    	circle
+
+    circle
     	.attr("cx",function(d){return x(d.time)})
     	.attr("cy",function(d){return y(d.DO)})
     	.attr("r",function(d){return 3})
@@ -241,7 +299,7 @@ function showTimeSeries(stationName){
 		.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
 		.on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
-		circle.exit().remove()
+	circle.exit().remove()
 
     svg.append("path")
       	.datum(DO)
