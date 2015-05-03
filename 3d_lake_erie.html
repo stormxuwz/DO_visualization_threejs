@@ -35,11 +35,12 @@
 			    var file1=$("#map_file").get(0).files[0];
 			    var file2=$("#face_index_file").get(0).files[0];
 			    var file3=$("#DO_coordinates_file").get(0).files[0];
-			    // var file1="attr/base.csv".files[0];
+			    // var file1="attr/base.csv";
 			    // var file2="attr/face_index.csv";
 			    // var file3="attr/grid.csv";
 
 			    Papa.parse(file1, {
+			    	download:true,
 			      header: false,
 			      dynamicTyping: true,
 			      delimiter: ",",
@@ -58,6 +59,7 @@
 			    
 			    Papa.parse(file2, {
 			      header: false,
+			      download:true,
 			      dynamicTyping: true,
 			      delimiter: ",",
 			      complete: function(results) {
@@ -76,6 +78,7 @@
 			    Papa.parse(file3, {
 			      header: false,
 			      dynamicTyping: true,
+			      download:true,
 			      delimiter: ",",
 			      complete: function(results) {
 			      	console.log("DO_coor load successful")
@@ -93,11 +96,13 @@
 		    function streaming_data()
 		    {
 		    	var file=$("#DO_data_file").get(0).files[0];
-		    	// var file="attr/idw_results.csv";
+		    	// var file="attr/idw_result.csv";
 		    	var c=0
 		    	console.log(file);
 		    	
 		    	Papa.parse(file, {
+		    	
+		    	   download:true,
 			   	   header:false,
 			   	   dynamicTyping: true,
 			   	   delimiter: ",",
