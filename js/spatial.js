@@ -29,6 +29,8 @@ var station_position={
 
 var station_entries=d3.entries(station_position);
 
+
+// Tooltip code is modified from http://bl.ocks.org/biovisualize/1016860
 var tooltip = d3.select("body")
 	.append("div")
 	.style("position", "absolute")

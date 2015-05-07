@@ -195,7 +195,7 @@ function create3DMap(data){
 
 
 
-
+// code below is from http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/ to help identify camera position
 function buildAxes( length ) {
 		var axes = new THREE.Object3D();
 
