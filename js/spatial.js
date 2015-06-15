@@ -2,7 +2,9 @@ var DO_data;
 var map;
 var overlay;
 var initialTime;
-var scale = chroma.scale(['red', 'yellow', 'blue']).domain([0, 12]);
+
+
+
 var station_ts;
 
 var station_position={
@@ -154,6 +156,18 @@ function init(){
 
 
 function changeData(time,transtion_time) {
+	
+	var scale = chroma.scale(['red', 'yellow', 'blue']).domain([0, 12]);
+
+	if($('#variance').prop('checked')){
+		var scale = chroma.scale(['red', 'yellow', 'blue']).domain([0, 2]);
+	}
+
+	if($('#temporal_relative').prop('checked')){
+		var scale = chroma.scale(['red', 'yellow', 'blue']).domain([0, 1]);
+	}
+
+
 	var circles=d3.select(overlay.getPanes().overlayMouseTarget)
 	.selectAll("circle");
 
@@ -165,12 +179,43 @@ function changeData(time,transtion_time) {
 	}
 
 	var row_index=diffTime/(60*10*1000);
-	console.log(diffTime)
-	console.log(row_index);
+	// console.log(diffTime);
+	// console.log(row_index);
 	var newData=[];
-	
+	var dailyMean=0;
+	var dailyVar=0;
+	var tmp=0;
 	for(var i=0;i<station_entries.length;i++){
-		newData.push(DO_data["logger_"+station_entries[i].key][row_index]);
+		
+		// Calcualte the daily mean values
+		for(var j=0;j<6*24;j++){
+			dailyMean+=DO_data["logger_"+station_entries[i].key][row_index+j]
+		}
+		dailyMean=dailyMean/(6*24)
+		
+		// Calcualte the daily variance
+		for(var j=0;j<6*24;j++){
+			tmp=DO_data["logger_"+station_entries[i].key][row_index+j]-dailyMean;
+			dailyVar+=tmp*tmp
+		}
+		dailyVar=Math.sqrt(dailyVar/(6*24))
+
+		// Push the data into new data list. 
+		if( $('#averaged').prop('checked')){
+			console.log("Daily Mean");
+			newData.push(dailyMean);
+		}
+		else if( $('#variance').prop('checked')){
+			console.log("Daily variance");
+			newData.push(dailyVar);
+		}
+		else{
+			console.log("Raw Data");
+			newData.push(DO_data["logger_"+station_entries[i].key][row_index]);
+		}
+		// 
+		// 
+		// console.log("changed")
 	}
 
 	circles.data(newData)
@@ -252,12 +297,12 @@ function showTimeSeries(stationName){
 
     var DO=[];
 
-    console.log([start_row_index,end_row_index]);
+    // console.log([start_row_index,end_row_index]);
 	
 	for(var i=start_row_index;i<end_row_index+1;i++){
 		DO.push({"time":new Date(DO_data.Time[i]*1000),"DO":DO_data["logger_"+stationName][i]});
 	}	
-	console.log(DO);
+	// console.log(DO);
 
 	var svg = d3.select("#timeSeries").select("#ts_plot");
 	

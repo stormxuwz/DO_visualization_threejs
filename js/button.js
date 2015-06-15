@@ -23,6 +23,21 @@ $('#end_time').appendDtpicker({
 			"current": "2014-7-5 12:30"
 		});
 
+$('#same_time').on('click',function(){
+	var old_time_start=new Date($("#start_time").val());
+	var old_time_end=new Date($("#end_time").val());
+	
+	var new_time_start=new Date($("#time_pick").val());
+	var time_diff=new_time_start-old_time_start;
+	var new_time_end=new Date(old_time_end.getTime()+time_diff);
+
+	console.log(new_time_end);
+
+	$("#start_time").handleDtpicker('setDate', new_time_start);
+	$('#end_time').handleDtpicker('setDate',new_time_end);
+	showTimeSeries(station_ts);
+	
+})
 
 	$("#Plot").on('click',function(){
 		var timeString=$("#time_pick").val();

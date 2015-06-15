@@ -35,9 +35,16 @@
 				<button id="Plot_minus10">-10 mins</button>
 				<button id="Plot_minushour">-1 hour</button>
 				<button id="Plot_minusday">-1 Day</button>
-				<button id="Plot_minusmonth">-1 Month</button> </br>
+				<button id="Plot_minusmonth">-1 Month</button>
 
 				<button id="3d">3D Animation</button> </br>
+
+				
+				Visualization Type: <input type="radio" name="DO_data" id="raw" value="Raw" checked> Raw Value
+         		<input type="radio" name="DO_data" id="averaged" value="averaged"> Daily Averaged Value
+         		<input type="radio" name="DO_data" id="variance" value="variance"> Daily Std<br>
+         		<input type="checkbox" id="temporal_relative"> Temporal Relative <br>
+         		
 				<!-- <button id="Plot_movie">See movie</button>	 -->
 				<div id="map" style="width: 100%; height: 450px"></div>
 
@@ -46,8 +53,9 @@
 			<div class="six columns">
 			<h5>Station time series</h5>
 				From <input type="text" id="start_time" value=""> 
-				To <input type="text" id="end_time" value=""> 
+				To <input type="text" id="end_time" value="">  
 
+				<button id="same_time"> Copy Time </button> </br>
 				<!-- <button id="day_range">Show daily</button> -->
 				<!-- <button id="month_range">Show weekly</button> -->
 				<!-- <button id="month_range">Show monthly</button> -->
