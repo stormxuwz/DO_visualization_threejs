@@ -43,8 +43,6 @@ function create3DMap(data){
 	// Create vertices
 	for(var y=0;y<height;y++){
 		for(var x=0;x<width;x++){		
-			// var vertex=new THREE.Vector3((x-width/2.0), -1, (y-height/2.0));
-			// var vertex=new THREE.Vector3((x-width/2.0), -(y-height/2.0), -10);
 			var vertex=new THREE.Vector3((-82.5+x*0.005491329+81.55)*80, -(41.5+y*0.004081633-42)*80,-1);
 			geom.vertices.push(vertex);
 		}
@@ -82,19 +80,16 @@ function create3DMap(data){
 		
 	
 	var vertexColorMaterial = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors});
-	// var vertexColorMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
 	vertexColorMaterial.side=THREE.DoubleSide;
 	var mesh = new THREE.Mesh( geom, vertexColorMaterial );
 	scene.add(mesh)
-
-	// Toy DO data
+	
 	// Create DO surface
-
 	var DO_geom = new THREE.Geometry();
 	
 	for(var i=0; i<do_coor.length;i++){
 		// console.log(do_coor[i]);
-		var vertex=new THREE.Vector3( (do_coor[i][1]+81.59)*80,(do_coor[i][0]-42.01)*80,0);
+		var vertex=new THREE.Vector3( (do_coor[i][1]+81.59)*80,(do_coor[i][0]-42.01)*80,(do_coor[i][2]-150)*4);
 		// var vertex=new THREE.Vector3((do_coor[i][0]-42.01)*8/0.03153800, -1,(do_coor[i][1]+81.59)*8/0.142);
 		// var vertex=new THREE.Vector3(do_coor[i][0], -1, do_coor[i][1]);
 		DO_geom.vertices.push(vertex);
@@ -103,40 +98,12 @@ function create3DMap(data){
 	
 	for(var i=0; i<face_index.length;i++){
 		// console.log(face_index[i]);
-		var face=new THREE.Face3(face_index[i][0],face_index[i][1],face_index[i][2]);
+		var face=new THREE.Face3(face_index[i][0]-1,face_index[i][1]-1,face_index[i][2]-1);
 		// face.color=new THREE.Color(0x666666);
 		DO_geom.faces.push(face);
 	}
 
 
-
-
-	// The following is a toy face
-	// var v1=new THREE.Vector3(-10,10,-10);
-	// var v2=new THREE.Vector3(10,8,-10);
-	// var v3=new THREE.Vector3(-10,6,10);
-	// var v4=new THREE.Vector3(10,7,10);
-
-	
-	// DO_geom.vertices.push(v1);
-	// DO_geom.vertices.push(v2);
-	// DO_geom.vertices.push(v3);
-	// DO_geom.vertices.push(v4);
-
-	// var face1=new THREE.Face3(0,1,3);
-	// var face2=new THREE.Face3(3,2,0);
-
-	// face1.vertexColors=[new THREE.Color(0xFFFF00),new THREE.Color(0xFF0000),new THREE.Color(0x66FF00)];
-	// face2.vertexColors=[new THREE.Color(0x66FF00),new THREE.Color(0x0000FF),new THREE.Color(0xFFFF00)];
-
-
-	// face1.color=new THREE.Color(0x00ff00);
-	// face2.color=new THREE.Color(0xFF0000);
-	
-	// DO_geom.faces.push(face1);
-	// DO_geom.faces.push(face2);
-
-	// var DO_vertexColorMaterial = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors});
 	var DO_vertexColorMaterial = new THREE.MeshLambertMaterial( { vertexColors: THREE.FaceColors});
 	var DO_mesh = new THREE.Mesh( DO_geom, vertexColorMaterial );
 
@@ -146,46 +113,24 @@ function create3DMap(data){
 	scene.add( axes );
 
 	var fps=60;
-
+	
 	function render() 
 	{	
 		renderer.render(scene,camera);
 		controls.update();
 		// geom.vertices[index].setY(currentY+3*Math.random()*(height_change[j+1]-height_change[j])/60);
 
-		for(var i=0;i<current_position.length;i++){
-			// DO_geom.faces[0].vertexColors[0].setHSL(, 0.5, 0.5 )
-			// DO_geom.faces[0].vertexColors[0].setHSL(, 0.5, 0.5 )
-			// DO_geom.faces[0].vertexColors[0].setHSL(, 0.5, 0.5 )
-
-			DO_geom.vertices[i].setZ(current_position[i]*5);
-		}
-
-		for(var i =0;i<DO_geom.faces.length;i++){
-			// var a=DO_geom.faces[i].a;
-			// var b=DO_geom.faces[i].b;
-			// var c=DO_geom.faces[i].c;
-			DO_geom.faces[i].color=new THREE.Color(scale(current_position[DO_geom.faces[i].a]).hex());
-			// DO_geom.faces[i].vertexColors[]
-		}
-		// var currentY=DO_geom.vertices[0].y
-		// var velocity=
-
-		
-		// DO_geom.vertices[0].setY(current_position[0]*2);
-
-		// console.log(current_position[0]*10);
-		
-		// DO_geom.faces[0].vertexColors[0].setHSL(, 0.5, 0.5 );
-		DO_mesh.geometry.colorsNeedUpdate = true;
-		DO_mesh.geometry.verticesNeedUpdate = true;
-		// requestAnimationFrame( render );
+		// for(var i=0;i<current_position.length;i++){
+			// DO_geom.vertices[i].setZ(current_position[i]*5);
 		// }
 
-		// DO_geom.vertices[0]=new THREE.Vector3(-10,randomNum*20,-10);
-		// DO_geom.faces[0].vertexColors[0].setHSL( randomNum, 0.5, 0.5 );
+		for(var i =0;i<DO_geom.faces.length;i++){			
+			DO_geom.faces[i].color=new THREE.Color(scale(current_position[DO_geom.faces[i].a]).hex());
+		}
 		
-		// mesh.geometry.computeVertexNormals();
+		DO_mesh.geometry.colorsNeedUpdate = true;
+		DO_mesh.geometry.verticesNeedUpdate = true;
+
 		// setTimeout( function() {
 		requestAnimationFrame( render );
 		// }, 1000 / 1);

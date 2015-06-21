@@ -50,7 +50,7 @@
 			        map_topo=results;
 			       
 			        if(file_counter===3){
-			        	create3DMap(map_topo.data,do_coor)
+			        	create3DMap(map_topo.data)
 			        	setTimeout(function(){streaming_data()},1500);
 			        }
 			      }
@@ -85,13 +85,15 @@
 			        do_coor = results.data;
 			        file_counter+=1;
 			        if(file_counter===3){
-			        	create3DMap(map_topo.data,do_coor)
+			        	create3DMap(map_topo.data)
 			        	setTimeout(function(){streaming_data()},1500);
 			        }
 			      }
 			    });
 		    }
    
+		    
+
 		    
 		    function streaming_data()
 		    {
