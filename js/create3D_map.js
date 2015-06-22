@@ -89,7 +89,7 @@ function create3DMap(data){
 	
 	for(var i=0; i<do_coor.length;i++){
 		// console.log(do_coor[i]);
-		var vertex=new THREE.Vector3( (do_coor[i][1]+81.59)*80,(do_coor[i][0]-42.01)*80,(do_coor[i][2]-150)*4);
+		var vertex=new THREE.Vector3( (do_coor[i][1]+81.705)*80,(do_coor[i][0]-42.005)*80,(do_coor[i][2]-150)*3);
 		// var vertex=new THREE.Vector3((do_coor[i][0]-42.01)*8/0.03153800, -1,(do_coor[i][1]+81.59)*8/0.142);
 		// var vertex=new THREE.Vector3(do_coor[i][0], -1, do_coor[i][1]);
 		DO_geom.vertices.push(vertex);
@@ -109,8 +109,8 @@ function create3DMap(data){
 
 	scene.add(DO_mesh)
 
-	axes = buildAxes( 100 );
-	scene.add( axes );
+	// axes = buildAxes( 100 );
+	// scene.add( axes );
 
 	var fps=60;
 	

@@ -29,7 +29,7 @@
 			var renderer;
 			var camera;
 			var face_index;
-
+			var current_time=new Date("2014/06/25 12:00:00")
 		  	function handleFileSelect() 
 		  	{
 			    var file1=$("#map_file").get(0).files[0];
@@ -99,7 +99,7 @@
 		    {
 		    	var file=$("#DO_data_file").get(0).files[0];
 		    	// var file="attr/idw_result.csv";
-		    	var c=0
+		    	
 		    	console.log(file);
 		    	
 		    	Papa.parse(file, {
@@ -110,9 +110,11 @@
 			   	   delimiter: ",",
 			   	   
 			   	   step:function(rows,parser){
-			   	   		console.log("row:",c);
+			   	   		// adding start time, to be done
 			   	   		current_position=rows.data[0];
-			   	   		c=c+1;
+			   	   		current_time.setMinutes(current_time.getMinutes()+10)
+			   	   		// console.log(current_time.toString())
+			   	   		$("#current_time").text(current_time.toString())
 			   	   		parser.pause();
 			   	   		resume_data(parser);
 			   	   },
@@ -140,6 +142,9 @@
 		DO data <input type="file" id="DO_data_file" name="files"/> <br>
 
 		<button onclick="handleFileSelect()"> Plot DO values </button>
+
+		<p id="current_time"> Time </p>
+
 		<br>
 
 
